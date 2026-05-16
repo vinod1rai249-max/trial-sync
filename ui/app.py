@@ -106,6 +106,12 @@ def fetch_reports():
         return resp.json() if resp.status_code == 200 else []
     except: return []
 
+def fetch_trials():
+    try:
+        resp = requests.get(f"{BASE_URL}/trials", timeout=10)
+        return resp.json() if resp.status_code == 200 else []
+    except: return []
+
 # --- SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.image("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d473530c25e7e4411b40.svg", width=40)
@@ -217,37 +223,48 @@ elif "Cohort Management" in nav:
 elif "Screening Engine" in nav:
     render_hero("AI Screening Engine", "High-fidelity LangGraph orchestration for patient eligibility.")
     
-    st.markdown("""
-        <div style='background: white; border-radius: 12px; padding: 20px; border: 1px solid #E5E7EB; margin-bottom: 20px;'>
-            <p style='margin:0; font-weight: 600; color: #374151;'>ACTIVE TRIAL</p>
-            <h3 style='margin:0; color: #1E40AF;'>ONCO-2025-001: Phase II Ovarian Cancer PARP Inhibitor Study</h3>
-        </div>
-    """, unsafe_allow_html=True)
+    trials = fetch_trials()
+    trial_options = {f"{t['id']}: {t['title']}": t['id'] for t in trials}
+    
+    selected_trial_label = st.selectbox("🎯 Select Clinical Trial for Screening", options=list(trial_options.keys()))
+    selected_trial_id = trial_options.get(selected_trial_label, "ONCO-2025-001")
+
+    # Display Trial Info
+    current_trial = next((t for t in trials if t['id'] == selected_trial_id), None)
+    if current_trial:
+        st.markdown(f"""
+            <div style='background: white; border-radius: 12px; padding: 20px; border: 1px solid #E5E7EB; margin-bottom: 20px;'>
+                <p style='margin:0; font-weight: 600; color: #374151;'>ACTIVE TRIAL</p>
+                <h3 style='margin:0; color: #1E40AF;'>{current_trial['id']}: {current_trial['title']}</h3>
+                <p style='margin-top: 10px; color: #6B7280;'>{current_trial['description']}</p>
+            </div>
+        """, unsafe_allow_html=True)
     
     patients = fetch_patients()
     reports = fetch_reports()
-    screened_ids = [r["patient_id"] for r in reports]
+    # Filter reports for the selected trial only
+    screened_ids = [r["patient_id"] for r in reports if r.get("trial_id") == selected_trial_id]
     unscreened = [p for p in patients if p["id"] not in screened_ids]
     
     col1, col2 = st.columns([1, 2.5])
     
     with col1:
         st.markdown("### ⚙️ Engine Control")
-        st.write(f"Queue Status: **{len(unscreened)} Pending**")
+        st.write(f"Queue Status: **{len(unscreened)} Pending** for this trial")
         
         if st.button("🚀 Execute Batch Pipeline", type="primary", use_container_width=True, disabled=not unscreened):
             progress_text = "Orchestrating Agent Nodes..."
             my_bar = st.progress(0, text=progress_text)
             
             with st.spinner(""):
-                resp = requests.post(f"{BASE_URL}/screen/batch")
+                resp = requests.post(f"{BASE_URL}/screen/batch?trial_id={selected_trial_id}")
                 for percent_complete in range(100):
                     time.sleep(0.01)
                     my_bar.progress(percent_complete + 1, text=progress_text)
                 
                 if resp.status_code == 200:
                     st.balloons()
-                    st.success("Batch Processing Successful")
+                    st.success(f"Batch Processing Successful for {selected_trial_id}")
                     st.rerun()
         
         st.markdown("---")
@@ -256,12 +273,13 @@ elif "Screening Engine" in nav:
 
     with col2:
         st.markdown("### 📋 Real-time Pipeline Logs")
-        if reports:
-            for r in reports[:8]:
+        trial_reports = [r for r in reports if r.get("trial_id") == selected_trial_id]
+        if trial_reports:
+            for r in trial_reports[:8]:
                 with st.expander(f"{'✅' if r['eligibility_status'] == 'match' else '❌'} Patient {r['patient_id'][:8]}", expanded=False):
                     st.json(r['full_report_json'])
         else:
-            st.info("Waiting for pipeline execution...")
+            st.info(f"No screenings performed yet for {selected_trial_id}")
 
 # --- ANALYTICS ---
 elif "Clinical Analytics" in nav:

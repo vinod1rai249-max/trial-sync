@@ -37,6 +37,19 @@ class PatientSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class TrialSchema(BaseModel):
+    id: str
+    title: str
+    description: str
+    criteria: Dict[str, Any]
+
+    class Config:
+        from_attributes = True
+
+@app.get("/trials", response_model=List[TrialSchema])
+async def get_trials(db: Session = Depends(get_db)):
+    return db.query(Trial).all()
+
 @app.post("/patients/generate")
 async def generate_patients(count: int = 10, db: Session = Depends(get_db)):
     raw_patients = generate_synthetic_patients(count)
@@ -66,6 +79,10 @@ async def get_patients(db: Session = Depends(get_db)):
 
 @app.post("/screen/batch")
 async def screen_batch(trial_id: str = "ONCO-2025-001", db: Session = Depends(get_db)):
+    trial = db.query(Trial).filter(Trial.id == trial_id).first()
+    if not trial:
+        raise HTTPException(status_code=404, detail="Trial not found")
+        
     # Get IDs of patients already screened for this trial
     screened_patient_ids = [r.patient_id for r in db.query(ScreeningReport.patient_id).filter(ScreeningReport.trial_id == trial_id).all()]
     
@@ -81,6 +98,8 @@ async def screen_batch(trial_id: str = "ONCO-2025-001", db: Session = Depends(ge
     for p in patients:
         initial_state = {
             "patient_id": p.id,
+            "trial_id": trial_id,
+            "trial_criteria": trial.criteria,
             "raw_data": {
                 "age": p.age,
                 "hba1c": p.hba1c,
@@ -126,6 +145,10 @@ async def screen_batch(trial_id: str = "ONCO-2025-001", db: Session = Depends(ge
 
 @app.post("/screen/{patient_id}")
 async def screen_single_patient(patient_id: str, trial_id: str = "ONCO-2025-001", db: Session = Depends(get_db)):
+    trial = db.query(Trial).filter(Trial.id == trial_id).first()
+    if not trial:
+        raise HTTPException(status_code=404, detail="Trial not found")
+        
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -135,6 +158,8 @@ async def screen_single_patient(patient_id: str, trial_id: str = "ONCO-2025-001"
     # Prepare state for agent
     initial_state = {
         "patient_id": patient.id,
+        "trial_id": trial_id,
+        "trial_criteria": trial.criteria,
         "raw_data": {
             "age": patient.age,
             "hba1c": patient.hba1c,

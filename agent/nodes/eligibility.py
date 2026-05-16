@@ -7,10 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def eligibility_node(state: AgentState) -> AgentState:
-    # Load criteria
-    with open("data/trial_criteria.json", "r") as f:
-        criteria = json.load(f)
-    
+    criteria = state["trial_criteria"]
     patient_data = state["deidentified_data"]
     
     # Configure for OpenRouter
