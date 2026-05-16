@@ -15,7 +15,7 @@ def eligibility_node(state: AgentState) -> AgentState:
     
     # Configure for OpenRouter
     llm = ChatOpenAI(
-        model=os.getenv("OPENROUTER_MODEL", "anthropic/claude-3.5-sonnet"),
+        model=os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini"),
         openai_api_key=os.getenv("OPENROUTER_API_KEY"),
         openai_api_base="https://openrouter.ai/api/v1",
         default_headers={
