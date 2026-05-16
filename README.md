@@ -58,6 +58,20 @@ The system dynamically handles multiple medical conditions. A "Match" or "No Mat
 
 ---
 
+## 📜 How we use LangSmith (Beginner Friendly)
+
+### The "Black Box" Problem
+Most AI systems are like a "Black Box"—you send a question, and you get an answer, but you have no idea how the AI reached that conclusion. In medicine, this isn't safe enough. Doctors and patients need to know **exactly** why a decision was made.
+
+### Our Solution: The AI "Flight Recorder"
+We integrated **LangSmith**, which acts like a "Flight Recorder" or a "CCTV Camera" for our AI agent.
+- **Transparency:** Every time the AI checks a patient, LangSmith records every single step.
+- **Thought Logic:** We can see the AI's "internal thoughts" as it compares a patient's blood sugar or age against the trial rules.
+- **Safety Audit:** If the AI makes a mistake, we can go back and look at the "tape" to understand why and fix it instantly.
+- **Accuracy Tracking:** It helps us measure how often the AI is right, ensuring it becomes a reliable partner for human doctors.
+
+---
+
 ## ✨ Key Features
 - **🤖 Agentic Workflow:** Uses a directed acyclic graph (DAG) to de-identify data, check eligibility, and assign clinical sites.
 - **🏢 Multi-Trial Support:** Dynamic selection dropdown allows coordinators to switch between different study protocols instantly.
