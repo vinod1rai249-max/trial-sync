@@ -65,72 +65,55 @@ class ScreeningReport(Base):
 def init_db():
     Base.metadata.create_all(bind=engine)
     
-    # Seed initial data if empty
     db = SessionLocal()
-    if not db.query(Trial).first():
-        trials = [
-            Trial(
-                id="ONCO-2025-001",
-                title="Phase II Ovarian Cancer PARP Inhibitor Study",
-                description="Evaluating the efficacy of a new PARP inhibitor in patients with advanced ovarian cancer.",
-                criteria={
-                    "inclusion": [
-                        "Age between 45 and 70",
-                        "HbA1c greater than 7.5",
-                        "Confirmed ovarian cancer diagnosis",
-                        "ECOG performance status 0 or 1"
-                    ],
-                    "exclusion": [
-                        "Prior chemotherapy in last 6 months",
-                        "Active autoimmune disease",
-                        "Pregnancy or breastfeeding"
-                    ]
-                }
-            ),
-            Trial(
-                id="LUNG-2025-002",
-                title="Stage III NSCLC Immunotherapy Trial",
-                description="Study of PD-L1 inhibitors in Non-Small Cell Lung Cancer.",
-                criteria={
-                    "inclusion": [
-                        "Age between 18 and 80",
-                        "Confirmed NSCLC diagnosis",
-                        "Positive PD-L1 expression (>1%)",
-                        "Able to provide informed consent"
-                    ],
-                    "exclusion": [
-                        "Metastatic disease to the brain",
-                        "History of other malignancy in last 2 years",
-                        "Severe cardiovascular disease"
-                    ]
-                }
-            ),
-            Trial(
-                id="DIAB-2025-003",
-                title="Type 2 Diabetes GLP-1/GIP Study",
-                description="Novel dual-agonist therapy for management of T2D.",
-                criteria={
-                    "inclusion": [
-                        "Age between 18 and 75",
-                        "HbA1c between 7.0 and 10.5",
-                        "BMI greater than 27 kg/m2",
-                        "Diagnosis of Type 2 Diabetes"
-                    ],
-                    "exclusion": [
-                        "Type 1 Diabetes diagnosis",
-                        "History of pancreatitis",
-                        "Current use of insulin"
-                    ]
-                }
-            )
-        ]
-        db.add_all(trials)
-        
-        sites = [
-            Site(id="S01", name="Chennai Central Lab", region="south", capacity_total=10),
-            Site(id="S02", name="Mumbai Trial Hub", region="west", capacity_total=5),
-            Site(id="S03", name="Delhi Oncology Ctr", region="north", capacity_total=15),
-        ]
-        db.add_all(sites)
-        db.commit()
+    
+    # Define clinical trials
+    demo_trials = [
+        {
+            "id": "ONCO-2025-001",
+            "title": "Phase II Ovarian Cancer PARP Inhibitor Study",
+            "description": "Evaluating the efficacy of a new PARP inhibitor in patients with advanced ovarian cancer.",
+            "criteria": {
+                "inclusion": ["Age 45-70", "HbA1c > 7.5", "Confirmed ovarian cancer", "ECOG 0 or 1"],
+                "exclusion": ["Prior chemo in last 6 months", "Active autoimmune", "Pregnancy"]
+            }
+        },
+        {
+            "id": "LUNG-2025-002",
+            "title": "Stage III NSCLC Immunotherapy Trial",
+            "description": "Study of PD-L1 inhibitors in Non-Small Cell Lung Cancer.",
+            "criteria": {
+                "inclusion": ["Age 18-80", "Confirmed NSCLC", "Positive PD-L1 (>1%)", "Informed consent"],
+                "exclusion": ["Brain metastasis", "Other malignancy in 2 yrs", "Severe CVD"]
+            }
+        },
+        {
+            "id": "DIAB-2025-003",
+            "title": "Type 2 Diabetes GLP-1/GIP Study",
+            "description": "Novel dual-agonist therapy for management of T2D.",
+            "criteria": {
+                "inclusion": ["Age 18-75", "HbA1c 7.0-10.5", "BMI > 27", "T2D Diagnosis"],
+                "exclusion": ["Type 1 Diabetes", "History of pancreatitis", "Current insulin use"]
+            }
+        }
+    ]
+
+    for t_data in demo_trials:
+        if not db.query(Trial).filter(Trial.id == t_data["id"]).first():
+            trial = Trial(**t_data)
+            db.add(trial)
+    
+    # Define clinical sites
+    demo_sites = [
+        {"id": "S01", "name": "Chennai Central Lab", "region": "south", "capacity_total": 10},
+        {"id": "S02", "name": "Mumbai Trial Hub", "region": "west", "capacity_total": 5},
+        {"id": "S03", "name": "Delhi Oncology Ctr", "region": "north", "capacity_total": 15},
+    ]
+
+    for s_data in demo_sites:
+        if not db.query(Site).filter(Site.id == s_data["id"]).first():
+            site = Site(**s_data)
+            db.add(site)
+            
+    db.commit()
     db.close()
