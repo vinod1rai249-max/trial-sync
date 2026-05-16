@@ -58,7 +58,22 @@ graph TD
 
 ---
 
-## 🛠️ How to Use
+## 🔒 Compliance, Consent & Data Privacy
+
+TrialMatch AI is designed with a **privacy-first architecture** that adheres to HIPAA and GDPR principles.
+
+### 1. The Consent Boundary
+The system operates on a **two-tier consent model**:
+- **Tier 1 (Pre-Screening):** The AI Agent only processes **de-identified data**. Personal identifiers (Name, SSN, Contact info) are stripped at the "De-identification Node" before reaching the LLM reasoning engine. This allows for rapid feasibility checks without compromising patient privacy.
+- **Tier 2 (Clinical Enrollment):** Once a "Match" is found, the system flags the patient for the **Human Clinical Coordinator**. The coordinator then initiates a formal informed consent process. Only **after** patient consent is obtained does the coordinator unlock the full medical record for trial enrollment.
+
+### 2. Use of Synthetic Data
+For this portfolio demo, **100% of the patient data is synthetic**. 
+- Generated via a custom **Synthea Simulation utility**.
+- No real patient data is used, stored, or transmitted.
+- This ensures a risk-free environment for demonstrating clinical trial orchestration logic.
+
+---
 
 ### 1. Ingest Cohort
 Go to the **Cohort Management** tab and click **🚀 Simulate Synthea Ingestion**. This generates synthetic FHIR-ready patient records (Age, HbA1c, Diagnosis, etc.) and persists them in the database.
