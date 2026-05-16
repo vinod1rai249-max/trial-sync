@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.env.example
+.pytest_cache/
+tests/
+trialsync.db
+test.db
+test_api.db
+.ipynb_checkpoints/
+*.log

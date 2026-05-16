@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.pytest_cache/
+tests/
+trialsync.db
+test.db
+test_api.db
+.git/
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+eval.py

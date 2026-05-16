@@ -1,0 +1,14 @@
+langgraph
+langchain-anthropic
+langchain-openai
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+psycopg2-binary
+streamlit
+python-dotenv
+pandas
+requests
+uuid
+plotly

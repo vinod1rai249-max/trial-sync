@@ -1,0 +1,15 @@
+{
+  "trial_id": "ONCO-2025-001",
+  "title": "Phase II Ovarian Cancer PARP Inhibitor Study",
+  "inclusion": [
+    "Age between 45 and 70",
+    "HbA1c greater than 7.5",
+    "Confirmed ovarian cancer diagnosis",
+    "ECOG performance status 0 or 1"
+  ],
+  "exclusion": [
+    "Prior chemotherapy in last 6 months",
+    "Active autoimmune disease",
+    "Pregnancy or breastfeeding"
+  ]
+}
