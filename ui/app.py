@@ -151,13 +151,18 @@ if "Executive Dashboard" in nav:
     rate = round(len(matches)/len(reports)*100, 1) if reports else 0
     m_col3.metric("Eligible Matches", len(matches), f"{rate}% Rate")
     
-    avg_latency = round(sum(r['processing_time_sec'] for r in reports)/len(reports), 2) if reports else 0
+    # Safety check for sum with potential None values
+    valid_latencies = [r['processing_time_sec'] for r in reports if r.get('processing_time_sec') is not None]
+    avg_latency = round(sum(valid_latencies)/len(valid_latencies), 2) if valid_latencies else 0
     m_col4.metric("Avg Latency", f"{avg_latency}s", "-92% vs manual", delta_color="inverse")
 
     st.markdown("### 📈 Performance Visuals")
     
     if reports:
         df_r = pd.DataFrame(reports)
+        # Data Cleaning for Plotly
+        df_r["processing_time_sec"] = pd.to_numeric(df_r["processing_time_sec"]).fillna(0)
+        df_r["run_index"] = range(1, len(df_r) + 1)
         
         c1, c2 = st.columns([1, 1])
         with c1:
@@ -171,10 +176,10 @@ if "Executive Dashboard" in nav:
             
         with c2:
             st.subheader("Processing Distribution")
-            fig = px.area(df_r, x=df_r.index, y="processing_time_sec",
-                          line_shape="spline", render_mode="svg")
+            fig = px.area(df_r, x="run_index", y="processing_time_sec",
+                          line_shape="spline")
             fig.update_traces(fillcolor="rgba(59, 130, 246, 0.2)", line_color="#3B82F6")
-            fig.update_layout(margin=dict(t=20, b=0, l=0, r=0), xaxis_title="Recent Runs", yaxis_title="Seconds")
+            fig.update_layout(margin=dict(t=20, b=0, l=0, r=0), xaxis_title="Run Count", yaxis_title="Seconds")
             st.plotly_chart(fig, use_container_width=True)
     else:
         st.warning("No data available. Proceed to Cohort Management to generate patients.")
