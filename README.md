@@ -4,13 +4,30 @@ TrialMatch AI is an enterprise-grade agentic pre-screening system designed to ac
 
 ---
 
-## 🛑 The Problem
+## 🌟 Simple Explanation (Beginner Friendly)
+
+### The Problem: The "40-Page Checklist" Bottleneck
+Imagine a doctor wants to help a patient join a new clinical trial for cancer. To do this, a human coordinator has to read a **40-page manual** of rules (like "Must be over 45," "Must not have had chemo in 6 months," "Must have a specific blood sugar level"). 
+*   **It's slow:** It takes weeks to check just one patient.
+*   **It's expensive:** Every day a trial is delayed costs millions of dollars.
+*   **It's manual:** 80% of trials miss their deadlines because they can't find patients fast enough.
+
+### Our Solution: An AI "Medical Auditor"
+TrialMatch AI is like giving the coordinator a super-intelligent assistant that has already memorized every rule in the manual.
+1.  **De-identification:** First, the AI "blurs" the patient's name and private ID to keep them safe and anonymous.
+2.  **Eligibility Audit:** The AI "reads" the patient's medical record and compares it to the trial rules instantly.
+3.  **Site Matching:** If the patient is a match, the AI finds the closest hospital that has an open spot.
+4.  **Coordinator Report:** The AI writes a clear summary explaining **why** the patient matched, so the human coordinator can make the final call in seconds instead of weeks.
+
+---
+
+## 🛑 The Problem (Business Context)
 - **80% of trials fail** to meet enrollment deadlines.
 - **$8M per day** is the estimated cost of trial delays for pharmaceutical companies.
 - **Manual screening is slow:** Coordinators must read through 40+ page eligibility checklists per patient, often taking up to 6 weeks.
 - **Pathologist Shortage:** Bandwidth is the bottleneck; human-only processes cannot scale for global trials.
 
-## 🚀 Our Solution
+## 🚀 Our Solution (Technical Approach)
 TrialMatch AI solves the #1 cause of trial failure—slow enrollment—by using a stateful **LangGraph Agent** to automate the eligibility auditing process. The system ensures clinical precision while maintaining a "coordinator-in-the-loop" model for final decision-making.
 
 ---
@@ -18,7 +35,7 @@ TrialMatch AI solves the #1 cause of trial failure—slow enrollment—by using 
 ## ✨ Key Features
 - **🤖 Agentic Workflow:** Uses a directed acyclic graph (DAG) to de-identify data, check eligibility, and assign clinical sites.
 - **📊 Executive Dashboard:** Professional real-time analytics for enrollment rates and system performance.
-- **🔒 HIPAA-Aware Design:** Built-in de-identification node ensures PII never reaches the reasoning model.
+- **🔒 HIPAA-Aware Design:** Built-in de-identification node ensures PII (Personal Identity) never reaches the reasoning model.
 - **📈 Site Optimization:** Intelligent scoring for site allocation based on geographic proximity and capacity.
 - **📜 Live Audit Trail:** Integrated with **LangSmith** for 100% transparency into AI reasoning.
 - **🚀 Scalable Backend:** Containerized FastAPI architecture deployed on **GCP Cloud Run**.
