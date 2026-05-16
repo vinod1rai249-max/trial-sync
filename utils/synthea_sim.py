@@ -6,11 +6,22 @@ def generate_synthetic_patients(n=10):
     
     patients = []
     for i in range(n):
-        diagnosis = random.choice(diagnoses)
-        age = random.randint(30, 80)
-        hba1c = round(random.uniform(5.0, 9.0), 1)
-        prior_chemo = random.choice([True, False])
-        ecog_status = random.choice([0, 1, 2])
+        # To ensure 70-80% match rate for demo purposes, 
+        # we bias the random choices towards the trial criteria.
+        is_demo_match = random.random() < 0.75
+        
+        if is_demo_match:
+            diagnosis = "ovarian cancer"
+            age = random.randint(45, 70)
+            hba1c = round(random.uniform(7.6, 9.0), 1)
+            prior_chemo = False
+            ecog_status = random.choice([0, 1])
+        else:
+            diagnosis = random.choice(diagnoses)
+            age = random.randint(30, 80)
+            hba1c = round(random.uniform(5.0, 9.0), 1)
+            prior_chemo = random.choice([True, False])
+            ecog_status = random.choice([0, 1, 2])
         
         patients.append({
             "name": f"Patient_{i+1}",
