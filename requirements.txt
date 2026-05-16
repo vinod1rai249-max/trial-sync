@@ -12,3 +12,4 @@ pandas
 requests
 uuid
 plotly
+matplotlib
