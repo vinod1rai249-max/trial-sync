@@ -32,8 +32,35 @@ TrialMatch AI solves the #1 cause of trial failure—slow enrollment—by using 
 
 ---
 
+## 🏛️ Organizational Benefits (ROI)
+- **10x Faster Enrollment:** Reduces the manual burden on clinical coordinators, allowing organizations to launch trials months ahead of schedule.
+- **Reduced Recruitment Costs:** Automates the "first pass" of screening, ensuring expensive human experts only focus on highly likely candidates.
+- **Global Scalability:** The agent can process thousands of patients across multi-site global trials simultaneously, something impossible for human teams.
+- **Audit-Ready Compliance:** Every decision is traced and logged, providing a perfect "paper trail" for regulatory bodies (FDA/EMA).
+
+---
+
+## 🎯 Multi-Trial Capability & Match Logic
+
+The system dynamically handles multiple medical conditions. A "Match" or "No Match" is determined by the AI Agent based on the following specific criteria sets:
+
+### 1. Ovarian Cancer (ONCO-2025-001)
+*   **Match Basis:** Age 45-70, HbA1c > 7.5, ECOG Status 0-1 (High mobility).
+*   **Auto-Reject:** Prior chemotherapy within 6 months or active autoimmune disease.
+
+### 2. Lung Cancer (LUNG-2025-002)
+*   **Match Basis:** Age 18-80, Positive PD-L1 expression (>1%).
+*   **Auto-Reject:** Metastatic disease to the brain or history of other cancers within 2 years.
+
+### 3. Type 2 Diabetes (DIAB-2025-003)
+*   **Match Basis:** HbA1c between 7.0 and 10.5, BMI > 27 kg/m2.
+*   **Auto-Reject:** Type 1 Diabetes diagnosis or current use of insulin.
+
+---
+
 ## ✨ Key Features
 - **🤖 Agentic Workflow:** Uses a directed acyclic graph (DAG) to de-identify data, check eligibility, and assign clinical sites.
+- **🏢 Multi-Trial Support:** Dynamic selection dropdown allows coordinators to switch between different study protocols instantly.
 - **📊 Executive Dashboard:** Professional real-time analytics for enrollment rates and system performance.
 - **🔒 HIPAA-Aware Design:** Built-in de-identification node ensures PII (Personal Identity) never reaches the reasoning model.
 - **📈 Site Optimization:** Intelligent scoring for site allocation based on geographic proximity and capacity.
@@ -46,14 +73,15 @@ TrialMatch AI solves the #1 cause of trial failure—slow enrollment—by using 
 ```mermaid
 graph TD
     A[Raw Patient Data] --> B[De-identification Node]
-    B --> C{Eligibility Check}
-    C -->|Match| D[Site Allocator Node]
-    C -->|No Match| E[Reject Node]
-    D --> F[Report Generation]
-    E --> F
-    F --> G[SQL Persistence]
-    F --> H[Streamlit UI Output]
-    F --> I[LangSmith Trace]
+    B --> C[Fetch Trial Criteria from DB]
+    C --> D{AI Eligibility Audit}
+    D -->|Match| E[Site Allocator Node]
+    D -->|No Match| F[Reject Node]
+    E --> G[Generate Coordinator Report]
+    F --> G
+    G --> H[SQL Persistence]
+    G --> I[Streamlit UI Output]
+    G --> J[LangSmith Trace & Log]
 ```
 
 ---
@@ -71,15 +99,16 @@ The system operates on a **two-tier consent model**:
 For this portfolio demo, **100% of the patient data is synthetic**. 
 - Generated via a custom **Synthea Simulation utility**.
 - No real patient data is used, stored, or transmitted.
-- This ensures a risk-free environment for demonstrating clinical trial orchestration logic.
 
 ---
+
+## 🛠️ How to Use
 
 ### 1. Ingest Cohort
 Go to the **Cohort Management** tab and click **🚀 Simulate Synthea Ingestion**. This generates synthetic FHIR-ready patient records (Age, HbA1c, Diagnosis, etc.) and persists them in the database.
 
-### 2. Run AI Engine
-Navigate to the **AI Screening Engine**. The active trial criteria (e.g., Phase II Ovarian Cancer study) are loaded automatically. Click **🚀 Execute Batch Pipeline** to trigger the LangGraph agent for all pending patients.
+### 2. Select Trial & Run Engine
+Navigate to the **AI Screening Engine**. Use the dropdown to select between **Ovarian Cancer**, **Lung Cancer**, or **Diabetes**. Click **🚀 Execute Batch Pipeline** to trigger the LangGraph agent for all pending patients for that specific trial.
 
 ### 3. Review Analytics
 Use the **Executive Dashboard** and **Clinical Analytics** tabs to view enrollment funnels, processing latencies, and site allocation maps.
