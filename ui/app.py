@@ -121,6 +121,10 @@ with st.sidebar:
     
     st.markdown("---")
     st.info("💡 **Pro Tip:** Enable LangSmith tracing in settings to monitor agent reasoning in real-time.")
+    
+    st.markdown("#### 🔍 SYSTEM OBSERVABILITY")
+    langsmith_url = "https://smith.langchain.com/projects/p/TrialMatch-AI-Enterprise"
+    st.link_button("📜 View Live Audit Trail", langsmith_url, use_container_width=True, help="Access real-time LangGraph traces and AI reasoning logs.")
 
 # --- HERO SECTION ---
 def render_hero(title, subtitle):
